@@ -45,7 +45,7 @@ public class MainScreen extends JFrame{
 		icon4 = new ImageIcon("image/memoryManager.png");
 		icon5 = new ImageIcon("image/devicesManager.png");
 		icon6 = new ImageIcon("image/terminal.png");
-		icon7 = new ImageIcon("image/preference.png");
+		icon7 = new ImageIcon("image/preference2.png");
 		
 		button1 = new JButton(icon1);
 		button2 = new JButton(icon2);
@@ -90,6 +90,7 @@ public class MainScreen extends JFrame{
 		mainScreen.setLocationRelativeTo(null);
 		mainScreen.setSize(dimension);
 		mainScreen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		mainScreen.setResizable(false);
 		mainScreen.setVisible(true);
 	}
 
