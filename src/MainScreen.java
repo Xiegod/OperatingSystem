@@ -113,6 +113,10 @@ public class MainScreen extends JFrame{
 				Finder frame = new Finder();
 				frame.setSize(300,300);
 				frame.setVisible(true);
+			}else if (e.getSource() == button3) {
+				Notes frame = new Notes();
+				frame.setSize(300,300);
+				frame.setVisible(true);
 			}else if (e.getSource() == button6) {
 				Terminal frame = new Terminal();
 				frame.setSize(300,300);
