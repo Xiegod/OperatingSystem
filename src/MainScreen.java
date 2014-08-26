@@ -56,18 +56,25 @@ public class MainScreen extends JFrame{
 		button7 = new JButton(icon7);
 		
 		button1.setBorder(null);		//…Ë÷√±ﬂΩÁÕ∏√˜
+		button1.setContentAreaFilled(false);
 		button1.setOpaque(false);
 		button2.setBorder(null);
+		button2.setContentAreaFilled(false);
 		button2.setOpaque(false);
 		button3.setBorder(null);
+		button3.setContentAreaFilled(false);
 		button3.setOpaque(false);
 		button4.setBorder(null);
+		button4.setContentAreaFilled(false);
 		button4.setOpaque(false);
 		button5.setBorder(null);
+		button5.setContentAreaFilled(false);
 		button5.setOpaque(false);
 		button6.setBorder(null);
+		button6.setContentAreaFilled(false);
 		button6.setOpaque(false);
 		button7.setBorder(null);
+		button7.setContentAreaFilled(false);
 		button7.setOpaque(false);
 		
 		
@@ -87,7 +94,6 @@ public class MainScreen extends JFrame{
 		// TODO Auto-generated method stub
 		MainScreen mainScreen = new MainScreen();
 		Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
-		mainScreen.setLocationRelativeTo(null);
 		mainScreen.setSize(dimension);
 		mainScreen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		mainScreen.setResizable(false);
