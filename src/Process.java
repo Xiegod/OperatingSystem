@@ -1,4 +1,8 @@
+import javax.swing.JFrame;
 
-public class Process {
 
+public class Process extends JFrame{
+	Process(){
+		
+	}
 }
