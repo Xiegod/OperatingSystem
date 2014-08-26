@@ -88,6 +88,12 @@ public class MainScreen extends JFrame{
 		
 		buttonListener = new ButtonListener();
 		button1.addActionListener(buttonListener);
+		button2.addActionListener(buttonListener);
+		button3.addActionListener(buttonListener);
+		button4.addActionListener(buttonListener);
+		button5.addActionListener(buttonListener);
+		button6.addActionListener(buttonListener);
+		button7.addActionListener(buttonListener);
 	}
 	
 	public static void main(String[] args) {
@@ -107,8 +113,10 @@ public class MainScreen extends JFrame{
 				Finder frame = new Finder();
 				frame.setSize(300,300);
 				frame.setVisible(true);
-			}else if (e.getSource() == button2) {
-				
+			}else if (e.getSource() == button6) {
+				Terminal frame = new Terminal();
+				frame.setSize(300,300);
+				frame.setVisible(true);
 			}
 		}
 		
