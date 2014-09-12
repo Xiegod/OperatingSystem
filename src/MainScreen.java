@@ -111,7 +111,7 @@ public class MainScreen extends JFrame{
 		public void actionPerformed(ActionEvent e) {
 			if (e.getSource() == button1) {
 				Finder frame = new Finder();
-				frame.setSize(300,300);
+				frame.setSize(800,500);
 				frame.setVisible(true);
 			}else if (e.getSource() == button2) {
 				Process frame = new Process();
