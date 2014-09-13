@@ -10,6 +10,7 @@ import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.util.List;
 
+import javax.jws.Oneway;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -36,6 +37,7 @@ public class Finder extends JFrame{
 	JPanel panel;
 	
 	JPopupMenu createpm,txtpm,dirpm;
+	String chooseName;
 	
 	public static Disk disk;
 
@@ -120,7 +122,7 @@ public class Finder extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 				String nameString = JOptionPane.showInputDialog("请输文本名：");
 				try {
-					Catalog_Function.createCatalog(nameString, 4,Explorer.getCDB());
+					Catalog_Function.createCatalog(nameString, 1,Explorer.getCDB());
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
@@ -133,7 +135,7 @@ public class Finder extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 				String nameString = JOptionPane.showInputDialog("请输入目录名：");
 				try {
-					Catalog_Function.createCatalog(nameString, 8,Explorer.getCDB());
+					Catalog_Function.createCatalog(nameString, 0,Explorer.getCDB());
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}		
@@ -160,18 +162,40 @@ public class Finder extends JFrame{
 	
 	public void InitDirAndTxtListener(){
 		//----文本及目录选择 弹出菜单----
+		JMenuItem copyDirItem = new JMenuItem("复制");
+		copyDirItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+
+			}
+		});
 		JMenuItem delDir = new JMenuItem("删除目录");
 		delDir.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				
+				try {
+					Catalog_Function.delCatalog(chooseName);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				readFile(Explorer.getCDB());
 			}
 		});
 		dirpm.add(delDir);
+		dirpm.add(copyDirItem);
 		
+		JMenuItem copyFileItem = new JMenuItem("复制");
 		JMenuItem delFileItem = new JMenuItem("删除文件");
 		delFileItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-		
+				try {
+					Catalog_Function.delCatalog(chooseName);
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				panel.setVisible(false);
+				readFile(Explorer.getCDB());
+				panel.setVisible(true);
 			}
 		});
 		JMenuItem writeFileItem = new JMenuItem("写入");
@@ -181,6 +205,7 @@ public class Finder extends JFrame{
 			}
 		});
 		txtpm.add(delFileItem);
+		txtpm.add(copyFileItem);
 		txtpm.add(writeFileItem);
 	}
 	
@@ -195,18 +220,40 @@ public class Finder extends JFrame{
 		List<Catalog> catalogs = Catalog_Function.getAllCatalogs(CDB);
 		System.out.println(catalogs.size() + "readFile");
 		for (int i = 0; i < catalogs.size(); i++) {
-			Catalog catalog = catalogs.get(i);
-			if (catalog.getProperty() == 8) {
-				JLabel dirLabel = new JLabel(catalog.getName());
+			final Catalog catalog = catalogs.get(i);
+			if (catalog.getProperty() == 0) {
+				final JLabel dirLabel = new JLabel(catalog.getName());
 				dirLabel.setIcon(dirIcon);
+				dirLabel.addMouseListener(new MouseAdapter() {
+				public void mouseClicked(MouseEvent e) {
+					if(e.getClickCount() == 2){
+						
+					}
+					if (e.getButton() == MouseEvent.BUTTON3) {
+						chooseName = catalog.getName();
+						dirpm.show(dirLabel, e.getX(), e.getY());
+					}
+				}
+				});;
 				
 				panel.setVisible(false);
 				panel.add(dirLabel);
 				panel.setVisible(true);
 			}
-			if (catalog.getProperty() == 4) {
-				JLabel fileLabel = new JLabel(catalog.getName() +"."+ catalog.getType());
+			if (catalog.getProperty() == 1) {
+				final JLabel fileLabel = new JLabel(catalog.getName() +"."+ catalog.getType());
 				fileLabel.setIcon(txtIcon);
+				fileLabel.addMouseListener(new MouseAdapter() {
+					public void mouseClicked(MouseEvent e) {
+						if(e.getClickCount() == 2){
+							
+						}
+						if (e.getButton() == MouseEvent.BUTTON3) {
+							chooseName = catalog.getName();
+							txtpm.show(fileLabel,e.getX(),e.getY());
+						}
+					}
+				});
 				
 				panel.setVisible(false);
 				panel.add(fileLabel);

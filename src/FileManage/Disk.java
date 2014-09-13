@@ -40,6 +40,11 @@ public class Disk{
 	public void init() throws IOException{
 		byte[] FAT = new byte[128];
 		byte[][] block = new byte[126][64];
+		for (int i = 0; i < 126; i++) {
+			for (int j = 0; j < 64; j++) {
+				block[i][j] = (byte)-1;
+			}
+		}
 		
 		FAT[0] = FAT[1] = FAT[2] = (byte)255;
 		
