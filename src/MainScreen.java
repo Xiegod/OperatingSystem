@@ -4,12 +4,18 @@ import java.awt.Panel;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+
+import FileManage.Disk;
+import FileManage.Finder;
+import FileManage.Terminal;
+import ProcessManage.Process;
 
 
 public class MainScreen extends JFrame{
@@ -21,7 +27,10 @@ public class MainScreen extends JFrame{
 	private JButton button1,button2,button3,button4,button5,button6,button7;
 	private ButtonListener buttonListener;
 	
+	static Disk disk;
+	
 	MainScreen(){
+		//----设置主面板透明，使其可以显示背景图片-----
 		mainPanel = new JPanel();
 		backgroundLabel.setBounds(0, 0, backgroundIcon.getIconWidth(), backgroundIcon.getIconHeight());
 		this.getLayeredPane().setLayout(null);
@@ -29,10 +38,18 @@ public class MainScreen extends JFrame{
 		mainPanel.setOpaque(false);
 		this.setContentPane(mainPanel);
 		
+		//----初始化软件按钮--------
 		InitButtonPanel();
 		
 		mainPanel.setLayout(new BorderLayout());
 		mainPanel.add(buttonPanel,BorderLayout.SOUTH);
+		
+		try {
+			disk = new Disk();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	private void InitButtonPanel(){
@@ -106,6 +123,7 @@ public class MainScreen extends JFrame{
 		mainScreen.setVisible(true);
 	}
 
+	//----所有软件入口button按钮公用一个listener类-----
 	class ButtonListener implements ActionListener{
 
 		public void actionPerformed(ActionEvent e) {

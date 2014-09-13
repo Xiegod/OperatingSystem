@@ -1,8 +1,9 @@
+package ProcessManage;
 import javax.swing.JFrame;
 
 
 public class Process extends JFrame{
-	Process(){
+	public Process(){
 		
 	}
 }

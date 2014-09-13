@@ -1,3 +1,4 @@
+package FileManage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -6,17 +7,17 @@ import java.io.IOException;
 public class Disk{
 	
 	static String DFPath = "data\\disk.dat";
-	public byte[][] block;
+	public static byte[][] block;
 	public File dataFile;
 	
-	Disk() throws IOException{
+	public Disk() throws IOException{
 		dataFile = new File(DFPath);
 		if (!dataFile.exists()) {
 			System.out.println("磁盘文件不存在！");
 		}	
 		
-		//----供第一次使用本软件初始化用----
-		init();
+		//----init()供第一次使用本软件初始化用----
+//		init();
 		
 		load();
 	}

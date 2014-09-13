@@ -1,13 +1,14 @@
+package FileManage;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -24,6 +25,8 @@ import javax.swing.JToolBar;
 public class Finder extends JFrame{
 	ImageIcon qianIcon;
 	ImageIcon houIcon;
+	ImageIcon txtIcon;
+	ImageIcon dirIcon;
 	JButton qianButton;
 	JButton houButton;
 	JButton toButton;
@@ -33,14 +36,8 @@ public class Finder extends JFrame{
 	
 	JPopupMenu createpm,txtpm,dirpm;
 	
-	Disk disk;
-	
+
 	public Finder(){
-		try {
-			disk = new Disk();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 		InitGUI();
 		InitListener();
 		
@@ -81,6 +78,8 @@ public class Finder extends JFrame{
 		panel = new JPanel();
 		panel.setBackground(Color.white);
 		panel.setPreferredSize(new Dimension(760,490));
+		panel.setLayout(new FlowLayout(FlowLayout.LEFT));
+		readFile(2);
 		JSP = new JScrollPane(panel);
 		
 		setLayout(new BorderLayout());
@@ -160,5 +159,35 @@ public class Finder extends JFrame{
 		txtpm.add(delFileItem);
 		txtpm.add(writeFileItem);
 				
+	}
+	
+	//----从给定的磁盘块读取数据文件--------
+	public void readFile(int CDB){
+		panel.setVisible(false);
+		panel.removeAll();
+		panel.setVisible(true);
+		dirIcon = new ImageIcon("image/Finder/dir.png");
+		txtIcon = new ImageIcon("image/Finder/TXT.png");
+		
+		List<Catalog> catalogs = Catalog_Function.getAllCatalogs(CDB);
+		for (int i = 0; i < catalogs.size(); i++) {
+			Catalog catalog = catalogs.get(i);
+			if (catalog.getProperty() == 8) {
+				JLabel dirLabel = new JLabel(catalog.getName());
+				dirLabel.setIcon(dirIcon);
+				
+				panel.setVisible(false);
+				panel.add(dirLabel);
+				panel.setVisible(true);
+			}
+			if (catalog.getProperty() == 4) {
+				JLabel fileLabel = new JLabel(catalog.getName() +"."+ catalog.getType());
+				fileLabel.setIcon(txtIcon);
+				
+				panel.setVisible(false);
+				panel.add(fileLabel);
+				panel.setVisible(true);
+			}
+		}
 	}
 }
