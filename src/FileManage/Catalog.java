@@ -7,16 +7,25 @@ public class Catalog {
 	private byte startBlock;
 	private byte length;
 	
-	public Catalog(byte[] data,int i){
+	public Catalog(String name,String type,byte property,byte startBlock,byte length){
+		this.name = name;
+		this.type = type;
+		this.property = property;
+		this.startBlock = startBlock;
+		this.length = length;
+	}
+	
+ 	public Catalog(byte[] data,int i){
 		byte[] temp = new byte[3];
 		temp[0] = data[i];
 		temp[1] = data[i + 1];
 		temp[2] = data[i + 2];		
-		name = temp.toString();
+		name = new String(temp);
 		
+		temp = new byte[2];
 		temp[0] = data[i + 3];
 		temp[1] = data[i + 4];
-		type = temp.toString();
+		type = new String(temp);
 		
 		property = data[i + 5];
 		startBlock = data[i + 6];
@@ -31,6 +40,7 @@ public class Catalog {
 		data[1] = temp[1];
 		data[2] = temp[2];	
 		
+		temp = new byte[2];
 		temp = type.getBytes();
 		data[3] = temp[0];
 		data[4] = temp[1];

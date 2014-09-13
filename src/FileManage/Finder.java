@@ -15,6 +15,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
@@ -36,11 +37,13 @@ public class Finder extends JFrame{
 	
 	JPopupMenu createpm,txtpm,dirpm;
 	
+	public static Disk disk;
 
-	public Finder(){
+	public Finder() throws IOException{
+		disk = new Disk();
 		InitGUI();
-		InitListener();
-		
+		InitPanelListener();
+		InitDirAndTxtListener();
 	}
 	public void InitGUI(){
 		qianIcon = new ImageIcon("image/Finder/qian.png");
@@ -88,7 +91,7 @@ public class Finder extends JFrame{
 		
 	}
 
-	public void InitListener(){
+	public void InitPanelListener(){
 		qianButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				
@@ -115,18 +118,34 @@ public class Finder extends JFrame{
 		JMenuItem newfileItem = new JMenuItem("新建文本");
 		newfileItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("新建文本");
+				String nameString = JOptionPane.showInputDialog("请输文本名：");
+				try {
+					Catalog_Function.createCatalog(nameString, 4,Explorer.getCDB());
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+				readFile(Explorer.getCDB());
 			}
 		});
+		
 		JMenuItem newDirItem = new JMenuItem("新建文件夹");
 		newDirItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-		
+				String nameString = JOptionPane.showInputDialog("请输入目录名：");
+				try {
+					Catalog_Function.createCatalog(nameString, 8,Explorer.getCDB());
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}		
+				panel.setVisible(false);
+				readFile(Explorer.getCDB());
+				panel.setVisible(true);
 			}
 		});
-		createpm.add(newfileItem);
-		createpm.add(newDirItem);
 		
+		createpm.add(newDirItem);
+		createpm.add(newfileItem);
+				
 		panel.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
 				if (e.getButton() == MouseEvent.BUTTON3) {
@@ -135,6 +154,11 @@ public class Finder extends JFrame{
 			}
 		});
 		
+
+				
+	}
+	
+	public void InitDirAndTxtListener(){
 		//----文本及目录选择 弹出菜单----
 		JMenuItem delDir = new JMenuItem("删除目录");
 		delDir.addActionListener(new ActionListener() {
@@ -158,7 +182,6 @@ public class Finder extends JFrame{
 		});
 		txtpm.add(delFileItem);
 		txtpm.add(writeFileItem);
-				
 	}
 	
 	//----从给定的磁盘块读取数据文件--------
@@ -170,6 +193,7 @@ public class Finder extends JFrame{
 		txtIcon = new ImageIcon("image/Finder/TXT.png");
 		
 		List<Catalog> catalogs = Catalog_Function.getAllCatalogs(CDB);
+		System.out.println(catalogs.size() + "readFile");
 		for (int i = 0; i < catalogs.size(); i++) {
 			Catalog catalog = catalogs.get(i);
 			if (catalog.getProperty() == 8) {

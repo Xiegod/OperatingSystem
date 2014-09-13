@@ -3,12 +3,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.rmi.server.LoaderHandler;
 
 public class Disk{
 	
 	static String DFPath = "data\\disk.dat";
-	public static byte[][] block;
-	public File dataFile;
+	public byte[][] block;
+	public static File dataFile;
 	
 	public Disk() throws IOException{
 		dataFile = new File(DFPath);
@@ -25,15 +26,16 @@ public class Disk{
 	public void load() throws IOException{
 		block = new byte[128][64];
 		FileInputStream inputStream = new FileInputStream(dataFile);
-		for (int i = 0; i < block.length; i++) {
+		for (int i = 0; i < this.block.length; i++) {
 			if (inputStream.read(block[i],0,64) == 64) {
-				System.out.println("第 "+ i + " 磁盘块读取成功");
+//			System.out.println("第 "+ i + " 磁盘块读取成功");
 			}else {
 				System.out.println("第 "+ i + " 磁盘块读取失败！！！！");
 			}
 		}
 		inputStream.close();
 	}
+	
 	
 	public void init() throws IOException{
 		byte[] FAT = new byte[128];

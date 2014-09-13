@@ -13,6 +13,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import FileManage.Disk;
+import FileManage.Explorer;
 import FileManage.Finder;
 import FileManage.Terminal;
 import ProcessManage.Process;
@@ -44,12 +45,14 @@ public class MainScreen extends JFrame{
 		mainPanel.setLayout(new BorderLayout());
 		mainPanel.add(buttonPanel,BorderLayout.SOUTH);
 		
+		//----进行软件使用必要的初始化（读取磁盘，初始化磁盘块号追踪器）------
 		try {
 			disk = new Disk();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		Explorer explorer = new Explorer();
 	}
 	
 	private void InitButtonPanel(){
@@ -128,7 +131,13 @@ public class MainScreen extends JFrame{
 
 		public void actionPerformed(ActionEvent e) {
 			if (e.getSource() == button1) {
-				Finder frame = new Finder();
+				Finder frame = null;
+				try {
+					frame = new Finder();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				frame.setSize(800,500);
 				frame.setVisible(true);
 			}else if (e.getSource() == button2) {
