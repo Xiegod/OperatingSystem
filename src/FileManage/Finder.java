@@ -9,6 +9,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.util.List;
+import java.util.Stack;
 
 import javax.jws.Oneway;
 import javax.swing.ImageIcon;
@@ -38,6 +39,9 @@ public class Finder extends JFrame{
 	
 	JPopupMenu createpm,txtpm,dirpm;
 	String chooseName;
+	int chooseType;
+	
+	Stack<Integer> stack = new Stack<Integer>();
 	
 	public static Disk disk;
 
@@ -47,6 +51,7 @@ public class Finder extends JFrame{
 		InitPanelListener();
 		InitDirAndTxtListener();
 	}
+	
 	public void InitGUI(){
 		qianIcon = new ImageIcon("image/Finder/qian.png");
 		houIcon  = new ImageIcon("image/Finder/hou.png");
@@ -96,13 +101,22 @@ public class Finder extends JFrame{
 	public void InitPanelListener(){
 		qianButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				
+				if (Explorer.getCDB() != 2) {
+					stack.add(Explorer.getCDB());
+				}
+				Explorer.setCDB(Explorer.getPDB());				
+				readFile(Explorer.getCDB());
 			}
 		});
 
 		houButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
+				if (!stack.isEmpty()) {
+					int CDB = stack.pop(); 
+					Explorer.setPDB();
+					Explorer.setCDB(CDB);
+					readFile(CDB);
+				}
 			}
 		});
 
@@ -113,8 +127,6 @@ public class Finder extends JFrame{
 		});
 		
 		createpm = new JPopupMenu();
-		txtpm = new JPopupMenu();
-		dirpm = new JPopupMenu();
 		
 		//----新建 弹出菜单-----
 		JMenuItem newfileItem = new JMenuItem("新建文本");
@@ -155,13 +167,14 @@ public class Finder extends JFrame{
 				}
 			}
 		});
-		
-
 				
 	}
 	
 	public void InitDirAndTxtListener(){
 		//----文本及目录选择 弹出菜单----
+		txtpm = new JPopupMenu();
+		dirpm = new JPopupMenu();
+		
 		JMenuItem copyDirItem = new JMenuItem("复制");
 		copyDirItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -172,7 +185,7 @@ public class Finder extends JFrame{
 		delDir.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				try {
-					Catalog_Function.delCatalog(chooseName);
+					Catalog_Function.delCatalog(chooseName,chooseType);
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -188,7 +201,7 @@ public class Finder extends JFrame{
 		delFileItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					Catalog_Function.delCatalog(chooseName);
+					Catalog_Function.delCatalog(chooseName,chooseType);
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -209,7 +222,7 @@ public class Finder extends JFrame{
 		txtpm.add(writeFileItem);
 	}
 	
-	//----从给定的磁盘块读取数据文件--------
+	//----从给定的磁盘块读取数据文件放置在内容面板--------
 	public void readFile(int CDB){
 		panel.setVisible(false);
 		panel.removeAll();
@@ -227,10 +240,13 @@ public class Finder extends JFrame{
 				dirLabel.addMouseListener(new MouseAdapter() {
 				public void mouseClicked(MouseEvent e) {
 					if(e.getClickCount() == 2){
-						
+						Explorer.setPDB();
+						Explorer.setCDB(catalog.getStartBlock());
+						readFile(Explorer.getCDB());
 					}
 					if (e.getButton() == MouseEvent.BUTTON3) {
 						chooseName = catalog.getName();
+						chooseType = 0;
 						dirpm.show(dirLabel, e.getX(), e.getY());
 					}
 				}
@@ -250,6 +266,7 @@ public class Finder extends JFrame{
 						}
 						if (e.getButton() == MouseEvent.BUTTON3) {
 							chooseName = catalog.getName();
+							chooseType = 1;
 							txtpm.show(fileLabel,e.getX(),e.getY());
 						}
 					}
