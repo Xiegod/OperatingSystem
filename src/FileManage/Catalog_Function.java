@@ -90,20 +90,19 @@ public class Catalog_Function {
 
 	
 	//----删除目录，创建目录，写入目录----
-	public static void delCatalog(String name,int type) throws IOException {
+	public static int delCatalog(String name,int type) throws IOException {
 			
 		Catalog catalog;
 		
-		if (type == 0) {
 			for (int i = 0; i < 8; i++) {
 				int property = Finder.disk.block[Explorer.getCDB()][i * 8 +5];
-				if (property == 0) {
+				if (property == type && type == 0) {
 					catalog = new Catalog(Finder.disk.block[Explorer.getCDB()], i * 8);
 					if (rename(name, catalog.getName())) {
 						int CDB = catalog.getStartBlock();
 						if (getAllCatalogs(CDB).size() > 0) {
 							JOptionPane.showMessageDialog(null, "文件目录不为空。不能删除");
-							return ;
+							return -1;
 						}else {
 							Finder.disk.block[Explorer.getCDB()][i * 8 + 5] = -1;
 							if(CDB > 63){
@@ -113,12 +112,16 @@ public class Catalog_Function {
 							}
 						}				
 					}
+				}else if(property == type && property == 1){
+					//----删除文件------
+					catalog = new Catalog(Finder.disk.block[Explorer.getCDB()], i * 8);
+					if (rename(name, catalog.getName())) {
+						Finder.disk.block[Explorer.getCDB()][i * 8 + 5] = -1;
+					}
 				}
 			}
-		}else {
-			//----删除文件------
-		}
 		writeInDisk();
+		return 1;
 	}
 	
 	public static int createCatalog(String name,int type,int CDB) throws IOException{
@@ -132,6 +135,12 @@ public class Catalog_Function {
 			JOptionPane.showMessageDialog(null, "文件数目超过限制！","警告",JOptionPane.CLOSED_OPTION);
 			return -1;
 		}
+		
+		if (name == null || name == "") {
+			JOptionPane.showMessageDialog(null, "名字不能为空","警告",JOptionPane.CLOSED_OPTION);
+			return -1;
+		}
+		
 		//----0 为 目录，1 为 文件----		
 		if (type == 0) {		
 			for (int i = 0; i < dirCatalogs.size(); i++) {
@@ -139,12 +148,11 @@ public class Catalog_Function {
 					JOptionPane.showMessageDialog(null, "该名字已被使用");
 					return -1;
 				}
-				System.out.println(dirCatalogs.get(i).getName());
 			}
 			newCatalog = new Catalog(name+"      ", "    ", (byte)0, (byte)freeBlock(), (byte)0);
 		}else {
 			for (int i = 0; i < fileCatalogs.size(); i++) {
-				if(rename(name, dirCatalogs.get(i).getName())){
+				if(rename(name, fileCatalogs.get(i).getName())){
 					JOptionPane.showMessageDialog(null, "该名字已被使用");
 					return -1;
 				}
@@ -174,14 +182,12 @@ public class Catalog_Function {
 		names = string.split("/");
 		
 		Explorer.setToTop();
-		System.out.println(string + "  " +names[1] + names.length);
 		
 		if (names[0].equals("C:")) {
 			for (int i = 1; i < names.length; i++) {
 				if((CDB = whereIscatalog(names[i], Explorer.getCDB())) != -1){
 					Explorer.getPDB().add(Explorer.getCDB());
 					Explorer.setCDB(CDB);
-					System.out.println("Done");
 				}else{
 					Explorer.setPDB(tempPDB);
 					Explorer.setCDB(tempCDB);
@@ -196,11 +202,9 @@ public class Catalog_Function {
 	
 	public static int whereIscatalog(String name,int CDB){
 		int cdb = -1;
-		System.out.println("In");
 		List<Catalog> catalogs = getAllCatalogs(CDB);
 		for (int i = 0; i < catalogs.size(); i++) {
 			if (rename(name, catalogs.get(i).getName())) {
-				System.out.println("找到同名");
 				return catalogs.get(i).getStartBlock();
 			}
 		}		

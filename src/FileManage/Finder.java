@@ -3,6 +3,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -23,6 +24,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
+import javax.swing.border.TitledBorder;
 
 
 public class Finder extends JFrame{
@@ -37,6 +39,11 @@ public class Finder extends JFrame{
 	JTextField textField;
 	JScrollPane JSP;
 	JPanel panel;
+	JPanel contentPanel;
+	JPanel fatPanel;
+	ImageIcon redIcon = new ImageIcon("image/Finder/red.png");
+	ImageIcon greenIcon = new ImageIcon("image/Finder/green.png");
+	int num[] = new int[128];
 	
 	JPopupMenu createpm,txtpm,dirpm;
 	String chooseName;
@@ -45,10 +52,13 @@ public class Finder extends JFrame{
 	Stack<Integer> stack = new Stack<Integer>();
 	
 	public static Disk disk;
+	
+	static int count = 1;
 
 	public Finder() throws IOException{
 		disk = new Disk();
 		InitGUI();
+
 		InitPanelListener();
 		InitDirAndTxtListener();
 	}
@@ -60,7 +70,7 @@ public class Finder extends JFrame{
 		houButton  = new JButton(houIcon);
 		toButton = new JButton("转到");
 		JLabel label = new JLabel("地址栏");
-		textField = new JTextField(60);
+		textField = new JTextField(30);
 		textField.setText(textString);
 		//----前进后退功能键和地址栏布局------
 		JToolBar toolBar = new JToolBar(); 
@@ -88,18 +98,68 @@ public class Finder extends JFrame{
 		//----在可滑动面板中添加内容面板------
 		panel = new JPanel();
 		panel.setBackground(Color.white);
-		panel.setPreferredSize(new Dimension(760,490));
+		panel.setPreferredSize(new Dimension(640,290));
 		panel.setLayout(new FlowLayout(FlowLayout.LEFT));
 		readFile(2);
-		JSP = new JScrollPane(panel);
+		
+		contentPanel = new JPanel();
+		contentPanel.setLayout(new BorderLayout());
+		contentPanel.add(toolPanel,BorderLayout.NORTH);
+		contentPanel.add(panel,BorderLayout.CENTER);
+		
+		fatPanel = new JPanel();
+		fatPanel.setPreferredSize(new Dimension(640,100));
+		InitFAT();
 		
 		setLayout(new BorderLayout());
-		add(toolPanel,BorderLayout.NORTH);
-		add(JSP,BorderLayout.CENTER);
-		
+		add(contentPanel,BorderLayout.CENTER);
+		add(fatPanel,BorderLayout.SOUTH);
 	}
 
-	public void InitPanelListener(){
+	public void InitFAT(){
+
+		
+		fatPanel.setVisible(false);
+		fatPanel.removeAll();
+		fatPanel.setVisible(true);
+		
+		fatPanel = new JPanel(new GridLayout(8, 16, 5, 5));
+		fatPanel.setBackground(Color.WHITE);	
+		fatPanel.setBorder(new TitledBorder("磁盘分配表（FAT）"));
+		
+
+		draw();
+	}
+	
+	public void draw(){
+		for (int i = 0; i < 128; i++) {
+			if (i < 64) {
+				num[i] = Finder.disk.block[0][i];
+			}else {
+				num[i] = Finder.disk.block[1][i - 64];
+			}
+		}
+		
+		System.out.println(count + " count");
+		count++;
+		
+		for (int i = 0; i < num.length; i++) {
+			if (num[i] == (byte)255) {
+				JLabel label = new JLabel();
+				label.setIcon(redIcon);
+				label.setToolTipText("第 " + i + " 块 下一连接块为 " + num[i]);
+				fatPanel.add(label);
+				
+			}else {
+				JLabel label = new JLabel();
+				label.setIcon(greenIcon);
+				label.setToolTipText("第 " + i + " 块 下一连接块为 " + num[i]);
+				fatPanel.add(label);
+			}
+		}
+	}
+
+ 	public void InitPanelListener(){
 		qianButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if (textString.length() > 3) {
@@ -147,9 +207,14 @@ public class Finder extends JFrame{
 		JMenuItem newfileItem = new JMenuItem("新建文本");
 		newfileItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String nameString = JOptionPane.showInputDialog("请输文本名：");
+				String nameString = JOptionPane.showInputDialog("请输文本名：").trim();
 				try {
-					Catalog_Function.createCatalog(nameString, 1,Explorer.getCDB());
+					if(Catalog_Function.createCatalog(nameString, 1,Explorer.getCDB()) == 1){
+						fatPanel.removeAll();
+						draw();
+						fatPanel.setVisible(false);
+						fatPanel.setVisible(true);
+					}
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
@@ -162,13 +227,16 @@ public class Finder extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 				String nameString = JOptionPane.showInputDialog("请输入目录名：");
 				try {
-					Catalog_Function.createCatalog(nameString, 0,Explorer.getCDB());
+					if(Catalog_Function.createCatalog(nameString, 0,Explorer.getCDB()) == 1){
+						fatPanel.removeAll();
+						draw();
+						fatPanel.setVisible(false);
+						fatPanel.setVisible(true);
+					}
 				} catch (IOException e1) {
 					e1.printStackTrace();
-				}		
-				panel.setVisible(false);
+				}	
 				readFile(Explorer.getCDB());
-				panel.setVisible(true);
 			}
 		});
 		
@@ -200,7 +268,12 @@ public class Finder extends JFrame{
 		delDir.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				try {
-					Catalog_Function.delCatalog(chooseName,chooseType);
+					if(Catalog_Function.delCatalog(chooseName,chooseType) == 1){
+						fatPanel.removeAll();
+						draw();
+						fatPanel.setVisible(false);
+						fatPanel.setVisible(true);
+					}
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -216,7 +289,12 @@ public class Finder extends JFrame{
 		delFileItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					Catalog_Function.delCatalog(chooseName,chooseType);
+					if(Catalog_Function.delCatalog(chooseName,chooseType) == 1){
+						fatPanel.removeAll();
+						draw();
+						fatPanel.setVisible(false);
+						fatPanel.setVisible(true);
+					}
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();

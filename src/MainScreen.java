@@ -139,7 +139,7 @@ public class MainScreen extends JFrame{
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-				frame.setSize(800,500);
+				frame.setSize(640,700);
 				frame.setVisible(true);
 			}else if (e.getSource() == button2) {
 				Process frame = new Process();
