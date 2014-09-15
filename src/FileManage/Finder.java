@@ -33,6 +33,7 @@ public class Finder extends JFrame{
 	JButton qianButton;
 	JButton houButton;
 	JButton toButton;
+	String textString = new String("C:");
 	JTextField textField;
 	JScrollPane JSP;
 	JPanel panel;
@@ -60,7 +61,7 @@ public class Finder extends JFrame{
 		toButton = new JButton("转到");
 		JLabel label = new JLabel("地址栏");
 		textField = new JTextField(60);
-
+		textField.setText(textString);
 		//----前进后退功能键和地址栏布局------
 		JToolBar toolBar = new JToolBar(); 
 		
@@ -101,10 +102,15 @@ public class Finder extends JFrame{
 	public void InitPanelListener(){
 		qianButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				if (textString.length() > 3) {
+					textString = textString.substring(0,textString.lastIndexOf("/"));
+					textField.setText(textString);
+					
+				}
 				if (Explorer.getCDB() != 2) {
 					stack.add(Explorer.getCDB());
 				}
-				Explorer.setCDB(Explorer.getPDB());				
+				Explorer.setCDB(Explorer.popPDB());				
 				readFile(Explorer.getCDB());
 			}
 		});
@@ -112,8 +118,16 @@ public class Finder extends JFrame{
 		houButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (!stack.isEmpty()) {
-					int CDB = stack.pop(); 
-					Explorer.setPDB();
+					int CDB = stack.pop(); 				
+					List<Catalog> catalogs = Catalog_Function.getAllCatalogs(Explorer.getCDB());
+					for (int i = 0; i < catalogs.size(); i++) {
+						if (catalogs.get(i).getStartBlock() == CDB) {
+							textString = textString + "/" + catalogs.get(i).getName().trim();
+							textField.setText(textString);
+							break;
+						}
+					}				
+					Explorer.addCDB();
 					Explorer.setCDB(CDB);
 					readFile(CDB);
 				}
@@ -122,7 +136,8 @@ public class Finder extends JFrame{
 
 		toButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("This is a toBotton");
+				Catalog_Function.toDistinationPath(textField.getText());
+				readFile(Explorer.getCDB());
 			}
 		});
 		
@@ -231,7 +246,7 @@ public class Finder extends JFrame{
 		txtIcon = new ImageIcon("image/Finder/TXT.png");
 		
 		List<Catalog> catalogs = Catalog_Function.getAllCatalogs(CDB);
-		System.out.println(catalogs.size() + "readFile");
+//		System.out.println(catalogs.size() + "readFile");
 		for (int i = 0; i < catalogs.size(); i++) {
 			final Catalog catalog = catalogs.get(i);
 			if (catalog.getProperty() == 0) {
@@ -240,7 +255,10 @@ public class Finder extends JFrame{
 				dirLabel.addMouseListener(new MouseAdapter() {
 				public void mouseClicked(MouseEvent e) {
 					if(e.getClickCount() == 2){
-						Explorer.setPDB();
+						textString = textString + "/" + catalog.getName().trim();
+						textField.setText(textString);
+						
+						Explorer.addCDB();
 						Explorer.setCDB(catalog.getStartBlock());
 						readFile(Explorer.getCDB());
 					}

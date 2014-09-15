@@ -45,7 +45,7 @@ public class Catalog_Function {
 		return catalogList1;
 	}
 
-	//----寻找当前磁盘块中未使用的（8字节）-------
+	//----寻找空闲磁盘块和当前磁盘块中未使用的（8字节）-------
 	public static int freeEntry() {
 		int result = 0;
 		for (int i = 0; i <8; i++) {
@@ -71,6 +71,7 @@ public class Catalog_Function {
 		return result;
 	}
 
+	//----判断同名-------
 	public static boolean rename(String name,String name2){
 		boolean flag = true;
 		byte[] temp =( name+"      ").getBytes();
@@ -86,7 +87,9 @@ public class Catalog_Function {
 		
 		return flag;
 	}
+
 	
+	//----删除目录，创建目录，写入目录----
 	public static void delCatalog(String name,int type) throws IOException {
 			
 		Catalog catalog;
@@ -118,7 +121,6 @@ public class Catalog_Function {
 		writeInDisk();
 	}
 	
-
 	public static int createCatalog(String name,int type,int CDB) throws IOException{
 		Catalog newCatalog;
 		List<Catalog> dirCatalogs = getDirCatalogs(CDB);
@@ -153,20 +155,59 @@ public class Catalog_Function {
 		writeCatalog(newCatalog,CDB,freeEntry());	
 		return 1;
 	}
-	
-	
+		
 	public static int writeCatalog(Catalog catalog,int CDB,int point) throws IOException{
 		byte[] data = catalog.catalogToByte();
 		for (int i = 0; i < 8; i++) {
 			Finder.disk.block[CDB][point * 8 + i] = data[i];
 		} 
 		writeInDisk();
-		System.out.println("写入成功");
 		Finder.disk.load();
 		return 1;
 	}
 	
-
+	public static void toDistinationPath(String string){
+		List<Integer> tempPDB = Explorer.getPDB();
+		int tempCDB = Explorer.getCDB();
+		int CDB = 2;
+		String[] names = new String[8];
+		names = string.split("/");
+		
+		Explorer.setToTop();
+		System.out.println(string + "  " +names[1] + names.length);
+		
+		if (names[0].equals("C:")) {
+			for (int i = 1; i < names.length; i++) {
+				if((CDB = whereIscatalog(names[i], Explorer.getCDB())) != -1){
+					Explorer.getPDB().add(Explorer.getCDB());
+					Explorer.setCDB(CDB);
+					System.out.println("Done");
+				}else{
+					Explorer.setPDB(tempPDB);
+					Explorer.setCDB(tempCDB);
+					JOptionPane.showMessageDialog(null, "文件不存在！");
+				}
+			}
+			
+		}else{
+			JOptionPane.showMessageDialog(null, "请输入正确的文件路径！ \n  以 C:\\ 开头");
+		}
+	}
+	
+	public static int whereIscatalog(String name,int CDB){
+		int cdb = -1;
+		System.out.println("In");
+		List<Catalog> catalogs = getAllCatalogs(CDB);
+		for (int i = 0; i < catalogs.size(); i++) {
+			if (rename(name, catalogs.get(i).getName())) {
+				System.out.println("找到同名");
+				return catalogs.get(i).getStartBlock();
+			}
+		}		
+		return cdb;
+	}
+	
+	//----将所有磁盘块写入磁盘文件------
 	public static int writeInDisk() throws IOException{
 		FileOutputStream outputStream = new FileOutputStream(Finder.disk.dataFile);
 		for (int i = 0; i < 128; i++) {
@@ -176,7 +217,5 @@ public class Catalog_Function {
 		return 1;
 	}
 
-	public static void toDistinationPath(String string){
-		
-	}
+
 }

@@ -121,6 +121,7 @@ public class MainScreen extends JFrame{
 		MainScreen mainScreen = new MainScreen();
 		Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
 		mainScreen.setSize(1200,800);
+		mainScreen.setLocation(0, 100);
 		mainScreen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		mainScreen.setResizable(false);
 		mainScreen.setVisible(true);
