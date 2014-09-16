@@ -196,7 +196,12 @@ public class Finder extends JFrame{
 
 		toButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Catalog_Function.toDistinationPath(textField.getText());
+				int num = Catalog_Function.toDistinationPath(textField.getText());
+				if (num == 2) {
+					JOptionPane.showMessageDialog(null, "文件不存在！");
+				}else if (num == 3) {
+					JOptionPane.showMessageDialog(null, "请输入正确的文件路径！ \n  以 C:\\ 开头");
+				}
 				readFile(Explorer.getCDB());
 			}
 		});

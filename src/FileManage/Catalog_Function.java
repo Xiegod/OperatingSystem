@@ -174,7 +174,7 @@ public class Catalog_Function {
 		return 1;
 	}
 	
-	public static void toDistinationPath(String string){
+	public static int toDistinationPath(String string){
 		List<Integer> tempPDB = Explorer.getPDB();
 		int tempCDB = Explorer.getCDB();
 		int CDB = 2;
@@ -191,13 +191,14 @@ public class Catalog_Function {
 				}else{
 					Explorer.setPDB(tempPDB);
 					Explorer.setCDB(tempCDB);
-					JOptionPane.showMessageDialog(null, "文件不存在！");
+					return 2;
 				}
 			}
 			
 		}else{
-			JOptionPane.showMessageDialog(null, "请输入正确的文件路径！ \n  以 C:\\ 开头");
+			return 3;
 		}
+		return 1;
 	}
 	
 	public static int whereIscatalog(String name,int CDB){

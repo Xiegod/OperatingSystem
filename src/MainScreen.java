@@ -1,4 +1,5 @@
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Panel;
 import java.awt.Toolkit;
@@ -15,6 +16,7 @@ import javax.swing.JPanel;
 import FileManage.Disk;
 import FileManage.Explorer;
 import FileManage.Finder;
+import FileManage.Notes;
 import FileManage.Terminal;
 import ProcessManage.Process;
 
@@ -154,9 +156,16 @@ public class MainScreen extends JFrame{
 			}else if (e.getSource() == button5) {
 	
 			}else if (e.getSource() == button6) {
-				Terminal frame = new Terminal();
-				frame.setSize(300,300);
+				Terminal frame = null;
+				try {
+					frame = new Terminal();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				frame.setSize(600,500);
 				frame.setVisible(true);
+				frame.setTitle("Terminal");
 			}else if (e.getSource() == button7) {
 				Preference frame = new Preference();
 				frame.setSize(300,300);
