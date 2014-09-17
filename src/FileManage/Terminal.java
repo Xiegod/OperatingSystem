@@ -7,6 +7,7 @@ import java.awt.TextArea;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
+import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -15,6 +16,8 @@ import javax.swing.JScrollPane;
 public class Terminal extends JFrame {
 	TextArea t;
 	Finder finder;
+	String tempString;
+	String[] orderStrings = new String[8];
 	
 	public Terminal() throws IOException {
 		finder = new Finder();
@@ -70,18 +73,23 @@ public class Terminal extends JFrame {
 	}
 	
 	public void execute(String orderString) throws IOException{
-		String tempString;
-		String[] orderStrings = new String[8];
+
 		orderStrings = orderString.split(" ");
 		
 		String command = orderStrings[0];
 		System.out.println(command);
 		
 		switch (command) {
+		case "delete":
+			delete();
+			break;
+		case "create":
+			create();
+			break;
 		case "cd":
 			tempString = finder.textField.getText() + "/" +orderStrings[1];
 			if(Catalog_Function.toDistinationPath(tempString) != 1){			
-				t.append("\n    文件不存在！");
+				t.append("\n  " + tempString + ":No such file or directory");
 			}else {
 				finder.textField.setText(tempString);				
 			}
@@ -97,8 +105,19 @@ public class Terminal extends JFrame {
 			break;
 		
 		case "mkdir":
-			System.out.println("In2");
 			Catalog_Function.createCatalog(orderStrings[1], 0, Explorer.getCDB());	
+			
+			break;
+			
+		case "rmdir":
+			delete();
+			break;
+		
+		case "copy":
+			copy();
+			break;
+			
+		case "type":
 			
 			break;
 
@@ -108,6 +127,67 @@ public class Terminal extends JFrame {
 		}
 		
 		t.append("\n\n" + finder.textField.getText() + "~ $ ");
+	}
+	
+	public void copy() {
+		
+	}
+	
+	public void delete() throws IOException {
+		List<Catalog> catalogs;
+		
+		if (orderStrings[1].indexOf("/") == -1) {
+			tempString = "C:";
+		}else {
+			tempString = "C:"+ "/" +orderStrings[1].substring(0,orderStrings[1].lastIndexOf("/"));
+		}
+
+		if(Catalog_Function.toDistinationPath(tempString) != 1){			
+			t.append("\n  " + tempString + ":No such file or directory");
+		}else {
+			String string = orderStrings[1].substring(orderStrings[1].lastIndexOf("/") + 1,orderStrings[1].length());		
+			if (string.endsWith(".txt")) {
+				String string2 = string.substring(0,string.indexOf("."));	
+				Boolean flag = false;
+				catalogs = Catalog_Function.getFileCatalogs(Explorer.getCDB());
+				for (int i = 0; i < catalogs.size(); i++) {
+					if (Catalog_Function.rename(string2, catalogs.get(i).getName())) {
+						flag = true;
+						Catalog_Function.delCatalog(string2, 1);
+						return ;
+					}
+				}
+				t.append("\n  " + tempString + ":No such file or directory");
+				
+			}else {
+				catalogs =Catalog_Function.getDirCatalogs(Explorer.getCDB());
+				for (int i = 0; i < catalogs.size(); i++) {
+					if (Catalog_Function.rename(string, catalogs.get(i).getName())) {
+						Catalog_Function.delCatalog(string, 0);
+					}
+				}
+			}
+		}
+	}
+	
+	public void create() throws IOException {
+		if (orderStrings[1].indexOf("/") == -1) {
+			tempString = "C:";
+		}else {
+			tempString = "C:"+ "/" +orderStrings[1].substring(0,orderStrings[1].lastIndexOf("/"));
+		}
+
+		if(Catalog_Function.toDistinationPath(tempString) != 1){			
+			t.append("\n  " + tempString + ":No such file or directory");
+		}else {
+			finder.textField.setText(tempString);
+			String string = orderStrings[1].substring(orderStrings[1].lastIndexOf("/") + 1,orderStrings[1].length());
+			if (string.endsWith(".txt")) {
+				Catalog_Function.createCatalog(string.substring(0,string.indexOf(".")), 1, Explorer.getCDB());
+			}else {
+				Catalog_Function.createCatalog(string, 0, Explorer.getCDB());
+			}
+		}
 	}
 	
 }
