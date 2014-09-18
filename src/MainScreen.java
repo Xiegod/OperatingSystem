@@ -154,7 +154,12 @@ public class MainScreen extends JFrame{
 			}else if (e.getSource() == button4) {
 	
 			}else if (e.getSource() == button5) {
-	
+				try {
+					disk.init();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}else if (e.getSource() == button6) {
 				Terminal frame = null;
 				try {

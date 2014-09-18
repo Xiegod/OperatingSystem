@@ -40,10 +40,10 @@ public class Finder extends JFrame{
 	JScrollPane JSP;
 	JPanel panel;
 	JPanel contentPanel;
-	JPanel fatPanel;
-	ImageIcon redIcon = new ImageIcon("image/Finder/red.png");
-	ImageIcon greenIcon = new ImageIcon("image/Finder/green.png");
-	int num[] = new int[128];
+	static JPanel fatPanel;
+	static ImageIcon redIcon = new ImageIcon("image/Finder/red.png");
+	static ImageIcon greenIcon = new ImageIcon("image/Finder/green.png");
+	static int num[] = new int[128];
 	
 	JPopupMenu createpm,txtpm,dirpm;
 	String chooseName;
@@ -53,7 +53,6 @@ public class Finder extends JFrame{
 	
 	public static Disk disk;
 	
-	static int count = 1;
 
 	public Finder() throws IOException{
 		disk = new Disk();
@@ -131,7 +130,7 @@ public class Finder extends JFrame{
 		draw();
 	}
 	
-	public void draw(){
+	public static void draw(){
 		for (int i = 0; i < 128; i++) {
 			if (i < 64) {
 				num[i] = Finder.disk.block[0][i];
@@ -140,11 +139,8 @@ public class Finder extends JFrame{
 			}
 		}
 		
-		System.out.println(count + " count");
-		count++;
-		
 		for (int i = 0; i < num.length; i++) {
-			if (num[i] == (byte)255) {
+			if (num[i] != 0) {
 				JLabel label = new JLabel();
 				label.setIcon(redIcon);
 				label.setToolTipText("第 " + i + " 块 下一连接块为 " + num[i]);
@@ -363,6 +359,10 @@ public class Finder extends JFrame{
 				fileLabel.addMouseListener(new MouseAdapter() {
 					public void mouseClicked(MouseEvent e) {
 						if(e.getClickCount() == 2){
+							readFile(Explorer.getCDB());
+							Txt txt = new Txt(catalog);
+							txt.setSize(400, 500);
+							txt.setVisible(true);
 							
 						}
 						if (e.getButton() == MouseEvent.BUTTON3) {

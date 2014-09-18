@@ -118,7 +118,7 @@ public class Terminal extends JFrame {
 			break;
 			
 		case "type":
-			
+			type();
 			break;
 
 		default:
@@ -129,18 +129,10 @@ public class Terminal extends JFrame {
 		t.append("\n\n" + finder.textField.getText() + "~ $ ");
 	}
 	
-	public void copy() {
-		
-	}
-	
-	public void delete() throws IOException {
+	public void type() {
 		List<Catalog> catalogs;
 		
-		if (orderStrings[1].indexOf("/") == -1) {
-			tempString = "C:";
-		}else {
-			tempString = "C:"+ "/" +orderStrings[1].substring(0,orderStrings[1].lastIndexOf("/"));
-		}
+		stringToForm();
 
 		if(Catalog_Function.toDistinationPath(tempString) != 1){			
 			t.append("\n  " + tempString + ":No such file or directory");
@@ -148,18 +140,46 @@ public class Terminal extends JFrame {
 			String string = orderStrings[1].substring(orderStrings[1].lastIndexOf("/") + 1,orderStrings[1].length());		
 			if (string.endsWith(".txt")) {
 				String string2 = string.substring(0,string.indexOf("."));	
-				Boolean flag = false;
 				catalogs = Catalog_Function.getFileCatalogs(Explorer.getCDB());
 				for (int i = 0; i < catalogs.size(); i++) {
 					if (Catalog_Function.rename(string2, catalogs.get(i).getName())) {
-						flag = true;
+						finder.readFile(Explorer.getCDB());
+						Txt txt = new Txt(catalogs.get(i));
+						txt.setSize(400, 500);
+						txt.setVisible(true);
+						return ;
+					}
+				}
+			t.append("\n  " + tempString + ":No such file or directory");	
+			}
+		}
+	}
+	
+	public void copy() {
+		
+	}
+	
+	public void delete() throws IOException {
+		List<Catalog> catalogs;
+		
+		stringToForm();
+
+		if(Catalog_Function.toDistinationPath(tempString) != 1){			
+			t.append("\n  " + tempString + ":No such file or directory");
+		}else {
+			String string = orderStrings[1].substring(orderStrings[1].lastIndexOf("/") + 1,orderStrings[1].length());		
+			if (string.endsWith(".txt")) {		//ÎÄ¼þÉ¾³ý
+				String string2 = string.substring(0,string.indexOf("."));	
+				catalogs = Catalog_Function.getFileCatalogs(Explorer.getCDB());
+				for (int i = 0; i < catalogs.size(); i++) {
+					if (Catalog_Function.rename(string2, catalogs.get(i).getName())) {
 						Catalog_Function.delCatalog(string2, 1);
 						return ;
 					}
 				}
 				t.append("\n  " + tempString + ":No such file or directory");
 				
-			}else {
+			}else {				//Ä¿Â¼É¾³ý
 				catalogs =Catalog_Function.getDirCatalogs(Explorer.getCDB());
 				for (int i = 0; i < catalogs.size(); i++) {
 					if (Catalog_Function.rename(string, catalogs.get(i).getName())) {
@@ -190,4 +210,11 @@ public class Terminal extends JFrame {
 		}
 	}
 	
+	public void stringToForm(){
+		if (orderStrings[1].indexOf("/") == -1) {
+			tempString = "C:";
+		}else {
+			tempString = "C:"+ "/" +orderStrings[1].substring(0,orderStrings[1].lastIndexOf("/"));
+		}
+	}
 }

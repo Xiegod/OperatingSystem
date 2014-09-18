@@ -63,7 +63,7 @@ public class Catalog_Function {
 		for (int i = 0; i < 2; i++) {
 			for (int j = 0; j < 64; j++) {
 				if (Finder.disk.block[i][j] == 0) {
-					Finder.disk.block[i][j] = (byte)255;
+					Finder.disk.block[i][j] = (byte)-1;
 					return (i * 64 + j);
 				}
 			}
@@ -174,6 +174,8 @@ public class Catalog_Function {
 		return 1;
 	}
 	
+	
+	//----根据目录路径到达目录，返回目录所在块-------
 	public static int toDistinationPath(String string){
 		List<Integer> tempPDB = Explorer.getPDB();
 		int tempCDB = Explorer.getCDB();
