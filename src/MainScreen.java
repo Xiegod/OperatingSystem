@@ -19,6 +19,7 @@ import FileManage.Explorer;
 import FileManage.Finder;
 import FileManage.Notes;
 import FileManage.Terminal;
+import MemoryManager.MemoryManager;
 import ProcessManage.Process;
 
 
@@ -153,7 +154,11 @@ public class MainScreen extends JFrame{
 				frame.setSize(300,300);
 				frame.setVisible(true);
 			}else if (e.getSource() == button4) {
-	
+				MemoryManager Mframe =new MemoryManager();
+				Dimension dm = Toolkit.getDefaultToolkit().getScreenSize();
+				Mframe.setLocation((int)(dm.getWidth()-580)/2,(int)(dm.getHeight()-600)/2);
+				Mframe.setSize(580,600);
+				Mframe.setVisible(true);
 			}else if (e.getSource() == button5) {
 				Menu a = new Menu();
 				a.setLocationByPlatform(true);
