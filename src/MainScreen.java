@@ -13,6 +13,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import DevicesManager.Menu;
 import FileManage.Disk;
 import FileManage.Explorer;
 import FileManage.Finder;
@@ -154,12 +155,11 @@ public class MainScreen extends JFrame{
 			}else if (e.getSource() == button4) {
 	
 			}else if (e.getSource() == button5) {
-				try {
-					disk.init();
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+				Menu a = new Menu();
+				a.setLocationByPlatform(true);
+				a.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+				a.setSize(600, 400);
+				a.setVisible(true);	
 			}else if (e.getSource() == button6) {
 				Terminal frame = null;
 				try {
