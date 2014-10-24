@@ -165,18 +165,22 @@ public class Menu extends JFrame {
 			
 			while(true){
 				if(waitingList.isEmpty()) break;
-				Process p1 = (Process)waitingList.get(0);
-				if((p1.getNum_a()<=Device.numberOfA)&&(p1.getNum_b()<=Device.numberOfB)&&(p1.getNum_c()<=Device.numberOfC))
-				{
-					p1.turnToRunning();
-					Device.numberOfA -= p1.getNum_a();
-					Device.numberOfB -= p1.getNum_b();
-					Device.numberOfC -= p1.getNum_c();
-					runningList.add(p1);
-					waitingList.remove(0);
+				int i=0;
+				while(i<waitingList.size()){
+					Process p1 = (Process)waitingList.get(i);
+					if((p1.getNum_a()<=Device.numberOfA)&&(p1.getNum_b()<=Device.numberOfB)&&(p1.getNum_c()<=Device.numberOfC))
+					{
+						p1.turnToRunning();
+						Device.numberOfA -= p1.getNum_a();
+						Device.numberOfB -= p1.getNum_b();
+						Device.numberOfC -= p1.getNum_c();
+						runningList.add(p1);
+						waitingList.remove(i);
+					}
+					else
+						i++;
 				}
-				else
-					break;
+				break;
 			}
 			printWaitingList(waitingList);
 			printRunningList(runningList);
@@ -356,7 +360,11 @@ public class Menu extends JFrame {
 	public class StartListener implements ActionListener{
 		
 		public void actionPerformed(ActionEvent e){
-			new Thread(new Runnable(){public void run(){manageDevice();}}).start();
+			new Thread(new Runnable(){
+				public void run(){
+					manageDevice();
+					}
+				}).start();
 		}
 		
 	}
@@ -440,14 +448,14 @@ class OwnBorder implements Border{
 	  该方法用于绘制自定义的边界
 	*/
 	public void paintBorder(Component c, //边界所属的组件对象
-	Graphics g, //得到图形上下文引用，用于绘制
-	int x, int y, //边界的坐标
-	int width, int height) { //边界的宽度、长度
-	g.setColor(this.color); //设定颜色
-	g.fill3DRect(x,y,width-thickness,thickness,true); //绘制上边界
-	g.fill3DRect(x,y+thickness,thickness,height-thickness,true); //绘制左边界
-	g.fill3DRect(x+thickness,y+height-thickness,width-thickness,thickness,true); //绘制下边界
-	g.fill3DRect(x+width-thickness,y,thickness,height-thickness,true); //绘制右边界
+		Graphics g, //得到图形上下文引用，用于绘制
+		int x, int y, //边界的坐标
+		int width, int height) { //边界的宽度、长度
+		g.setColor(this.color); //设定颜色
+		g.fill3DRect(x,y,width-thickness,thickness,true); //绘制上边界
+		g.fill3DRect(x,y+thickness,thickness,height-thickness,true); //绘制左边界
+		g.fill3DRect(x+thickness,y+height-thickness,width-thickness,thickness,true); //绘制下边界
+		g.fill3DRect(x+width-thickness,y,thickness,height-thickness,true); //绘制右边界
 	}
 	/*实现Border 接口的第二个方法
 	  返回一个Insets 对象的引用

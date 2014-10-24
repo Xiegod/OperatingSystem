@@ -20,7 +20,9 @@ import FileManage.Finder;
 import FileManage.Notes;
 import FileManage.Terminal;
 import MemoryManager.MemoryManager;
-import ProcessManage.Process;
+import ProcessManage.MainThread;
+import ProcessManage.MainUI;
+import ProcessManage.SubThread;
 
 
 public class MainScreen extends JFrame{
@@ -125,7 +127,7 @@ public class MainScreen extends JFrame{
 		MainScreen mainScreen = new MainScreen();
 		Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
 		mainScreen.setSize(1200,800);
-		mainScreen.setLocation(0, 100);
+		mainScreen.setLocation(0, 50);
 		mainScreen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		mainScreen.setResizable(false);
 		mainScreen.setVisible(true);
@@ -146,8 +148,8 @@ public class MainScreen extends JFrame{
 				frame.setSize(640,700);
 				frame.setVisible(true);
 			}else if (e.getSource() == button2) {
-				Process frame = new Process();
-				frame.setSize(300,300);
+				MainUI frame = new MainUI();
+				frame.setSize(550,600);
 				frame.setVisible(true);
 			}else if (e.getSource() == button3) {
 				Notes frame = new Notes();
@@ -162,9 +164,10 @@ public class MainScreen extends JFrame{
 			}else if (e.getSource() == button5) {
 				Menu a = new Menu();
 				a.setLocationByPlatform(true);
-				a.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//				a.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				a.setSize(600, 400);
 				a.setVisible(true);	
+				
 			}else if (e.getSource() == button6) {
 				Terminal frame = null;
 				try {
@@ -178,7 +181,7 @@ public class MainScreen extends JFrame{
 				frame.setTitle("Terminal");
 			}else if (e.getSource() == button7) {
 				Preference frame = new Preference();
-				frame.setSize(300,300);
+				frame.setSize(500,400);
 				frame.setVisible(true);
 			}
 		}
