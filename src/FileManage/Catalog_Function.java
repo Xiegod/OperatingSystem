@@ -106,11 +106,7 @@ public class Catalog_Function {
 							return -1;
 						}else {
 							Finder.disk.block[Explorer.getCDB()][i * 8 + 5] = -1;
-							if(CDB > 63){
-								Finder.disk.block[1][CDB % 64] = 0;
-							}else {
-								Finder.disk.block[0][CDB] = 0;
-							}
+							Finder.disk.block[CDB / 64][CDB % 64] = 0;							
 							break;
 						}				
 					}
@@ -122,11 +118,17 @@ public class Catalog_Function {
 						Finder.disk.block[Explorer.getCDB()][i * 8 + 5] = -1;
 						next = Finder.disk.block[CDB / 64][CDB % 64];
 						Finder.disk.block[CDB / 64][CDB % 64] = 0;
+						for (int j = 0; j < 64; j++) {
+							Finder.disk.block[CDB][j] = (byte)-1;
+						}
 						
 						while (next != -1) {
 							CDB = Finder.disk.block[next / 64][next % 64];
 							Finder.disk.block[next / 64][next % 64] = 0;
 							next = CDB;
+							for (int j = 0; j < 64; j++) {
+								Finder.disk.block[next][j] = (byte)-1;
+							}
 						}
 						break;
 					}

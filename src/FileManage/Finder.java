@@ -260,12 +260,6 @@ public class Finder extends JFrame{
 		dirpm = new JPopupMenu();
 		
 		//----目录---
-		JMenuItem copyDirItem = new JMenuItem("复制");
-		copyDirItem.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-
-			}
-		});
 		JMenuItem delDir = new JMenuItem("删除目录");
 		delDir.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -284,10 +278,8 @@ public class Finder extends JFrame{
 			}
 		});
 		dirpm.add(delDir);
-		dirpm.add(copyDirItem);
 		
 		//----文本----
-		JMenuItem copyFileItem = new JMenuItem("复制");
 		JMenuItem delFileItem = new JMenuItem("删除文件");
 		delFileItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -309,7 +301,6 @@ public class Finder extends JFrame{
 		});
 
 		txtpm.add(delFileItem);
-		txtpm.add(copyFileItem);
 
 	}
 	
