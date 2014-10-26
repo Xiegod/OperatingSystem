@@ -45,7 +45,7 @@ public class Catalog_Function {
 		return catalogList1;
 	}
 
-	//----寻找空闲磁盘块和当前磁盘块中未使用的（8字节）-------
+	//----寻找空闲磁盘块和当前磁盘块中未使用的（8字节为单位）-------
 	public static int freeEntry() {
 		int result = 0;
 		for (int i = 0; i <8; i++) {
@@ -93,9 +93,10 @@ public class Catalog_Function {
 	public static int delCatalog(String name,int type) throws IOException {
 			
 		Catalog catalog;
-		
+		int next;
 			for (int i = 0; i < 8; i++) {
 				int property = Finder.disk.block[Explorer.getCDB()][i * 8 +5];
+				//-----删除目录---
 				if (property == type && type == 0) {
 					catalog = new Catalog(Finder.disk.block[Explorer.getCDB()], i * 8);
 					if (rename(name, catalog.getName())) {
@@ -110,16 +111,29 @@ public class Catalog_Function {
 							}else {
 								Finder.disk.block[0][CDB] = 0;
 							}
+							break;
 						}				
 					}
 				}else if(property == type && property == 1){
 					//----删除文件------
 					catalog = new Catalog(Finder.disk.block[Explorer.getCDB()], i * 8);
 					if (rename(name, catalog.getName())) {
+						int CDB = catalog.getStartBlock();
 						Finder.disk.block[Explorer.getCDB()][i * 8 + 5] = -1;
+						next = Finder.disk.block[CDB / 64][CDB % 64];
+						Finder.disk.block[CDB / 64][CDB % 64] = 0;
+						
+						while (next != -1) {
+							CDB = Finder.disk.block[next / 64][next % 64];
+							Finder.disk.block[next / 64][next % 64] = 0;
+							next = CDB;
+						}
+						break;
 					}
 				}
+				
 			}
+			
 		writeInDisk();
 		return 1;
 	}
@@ -136,10 +150,12 @@ public class Catalog_Function {
 			return -1;
 		}
 		
-		if (name == null || name == "") {
-			JOptionPane.showMessageDialog(null, "名字不能为空","警告",JOptionPane.CLOSED_OPTION);
+		if ( name.length() == 0) {
+			JOptionPane.showMessageDialog(null, "名字不能为空!","警告",JOptionPane.CLOSED_OPTION);
 			return -1;
 		}
+		
+		
 		
 		//----0 为 目录，1 为 文件----		
 		if (type == 0) {		

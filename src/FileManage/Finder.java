@@ -36,6 +36,7 @@ public class Finder extends JFrame{
 	JButton houButton;
 	JButton toButton;
 	String textString = new String("C:");
+	String tempString = "";
 	JTextField textField;
 	JScrollPane JSP;
 	JPanel panel;
@@ -63,8 +64,8 @@ public class Finder extends JFrame{
 	}
 	
 	public void InitGUI(){
-		qianIcon = new ImageIcon("image/Finder/qian.png");
-		houIcon  = new ImageIcon("image/Finder/hou.png");
+		qianIcon = new ImageIcon("image/Finder/back.png");
+		houIcon  = new ImageIcon("image/Finder/forward.png");
 		qianButton = new JButton(qianIcon);
 		houButton  = new JButton(houIcon);
 		toButton = new JButton("转到");
@@ -115,6 +116,7 @@ public class Finder extends JFrame{
 		add(fatPanel,BorderLayout.SOUTH);
 	}
 
+	//----FAT初始化布局---
 	public void InitFAT(){
 
 		
@@ -130,6 +132,7 @@ public class Finder extends JFrame{
 		draw();
 	}
 	
+	//----FAT画图函数----
 	public static void draw(){
 		for (int i = 0; i < 128; i++) {
 			if (i < 64) {
@@ -156,39 +159,32 @@ public class Finder extends JFrame{
 	}
 
  	public void InitPanelListener(){
+ 		
+ 		//
 		qianButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				if (textString.length() > 3) {
+				//----判断是否到了尽头，没有则返回上一层----
+				if (textString.length() > 3) {        
+					tempString = textString;
 					textString = textString.substring(0,textString.lastIndexOf("/"));
-					textField.setText(textString);
-					
+					textField.setText(textString);				
 				}
-				if (Explorer.getCDB() != 2) {
-					stack.add(Explorer.getCDB());
-				}
-				Explorer.setCDB(Explorer.popPDB());				
-				readFile(Explorer.getCDB());
+				
+				Catalog_Function.toDistinationPath(textString);
+				readFile(Explorer.getCDB()); 
 			}
 		});
 
 		houButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (!stack.isEmpty()) {
-					int CDB = stack.pop(); 				
-					List<Catalog> catalogs = Catalog_Function.getAllCatalogs(Explorer.getCDB());
-					for (int i = 0; i < catalogs.size(); i++) {
-						if (catalogs.get(i).getStartBlock() == CDB) {
-							textString = textString + "/" + catalogs.get(i).getName().trim();
-							textField.setText(textString);
-							break;
-						}
+				if (tempString != "") {
+						Catalog_Function.toDistinationPath(tempString);
+						textField.setText(tempString);					
+						readFile(Explorer.getCDB()); 
+						tempString = "";
 					}				
-					Explorer.addCDB();
-					Explorer.setCDB(CDB);
-					readFile(CDB);
-				}
-			}
-		});
+				} 
+		}); 
 
 		toButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -227,17 +223,20 @@ public class Finder extends JFrame{
 		newDirItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String nameString = JOptionPane.showInputDialog("请输入目录名：");
-				try {
-					if(Catalog_Function.createCatalog(nameString, 0,Explorer.getCDB()) == 1){
-						fatPanel.removeAll();
-						draw();
-						fatPanel.setVisible(false);
-						fatPanel.setVisible(true);
-					}
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}	
-				readFile(Explorer.getCDB());
+	//			System.out.println(nameString.length() + "  " + nameString);
+				if (nameString != null) {
+					try {
+						if(Catalog_Function.createCatalog(nameString, 0,Explorer.getCDB()) == 1){
+							fatPanel.removeAll();
+							draw();
+							fatPanel.setVisible(false);
+							fatPanel.setVisible(true);
+						}
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}	
+					readFile(Explorer.getCDB());
+				}
 			}
 		});
 		
@@ -253,12 +252,14 @@ public class Finder extends JFrame{
 		});
 				
 	}
-	
+
+ 	//----文本及目录选择 弹出菜单----
 	public void InitDirAndTxtListener(){
-		//----文本及目录选择 弹出菜单----
+		
 		txtpm = new JPopupMenu();
 		dirpm = new JPopupMenu();
 		
+		//----目录---
 		JMenuItem copyDirItem = new JMenuItem("复制");
 		copyDirItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -285,6 +286,7 @@ public class Finder extends JFrame{
 		dirpm.add(delDir);
 		dirpm.add(copyDirItem);
 		
+		//----文本----
 		JMenuItem copyFileItem = new JMenuItem("复制");
 		JMenuItem delFileItem = new JMenuItem("删除文件");
 		delFileItem.addActionListener(new ActionListener() {
@@ -305,15 +307,10 @@ public class Finder extends JFrame{
 				panel.setVisible(true);
 			}
 		});
-		JMenuItem writeFileItem = new JMenuItem("写入");
-		writeFileItem.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-			}
-		});
+
 		txtpm.add(delFileItem);
 		txtpm.add(copyFileItem);
-		txtpm.add(writeFileItem);
+
 	}
 	
 	//----从给定的磁盘块读取数据文件放置在内容面板--------

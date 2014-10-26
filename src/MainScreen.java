@@ -17,7 +17,6 @@ import DevicesManager.Menu;
 import FileManage.Disk;
 import FileManage.Explorer;
 import FileManage.Finder;
-import FileManage.Notes;
 import FileManage.Terminal;
 import MemoryManager.MemoryManager;
 import ProcessManage.MainThread;
@@ -106,7 +105,7 @@ public class MainScreen extends JFrame{
 		
 		buttonPanel.add(button1);
 		buttonPanel.add(button2);
-		buttonPanel.add(button3);
+//		buttonPanel.add(button3);
 		buttonPanel.add(button4);
 		buttonPanel.add(button5);
 		buttonPanel.add(button6);
@@ -152,9 +151,7 @@ public class MainScreen extends JFrame{
 				frame.setSize(550,600);
 				frame.setVisible(true);
 			}else if (e.getSource() == button3) {
-				Notes frame = new Notes();
-				frame.setSize(300,300);
-				frame.setVisible(true);
+			
 			}else if (e.getSource() == button4) {
 				MemoryManager Mframe =new MemoryManager();
 				Dimension dm = Toolkit.getDefaultToolkit().getScreenSize();
@@ -180,8 +177,10 @@ public class MainScreen extends JFrame{
 				frame.setVisible(true);
 				frame.setTitle("Terminal");
 			}else if (e.getSource() == button7) {
-				Preference frame = new Preference();
-				frame.setSize(500,400);
+				About frame = new About();
+				frame.setSize(300,140);
+				Dimension dm = Toolkit.getDefaultToolkit().getScreenSize();
+				frame.setLocation((int)(dm.getWidth()-580)/2,(int)(dm.getHeight()-600)/2);
 				frame.setVisible(true);
 			}
 		}

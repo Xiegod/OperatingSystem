@@ -126,12 +126,8 @@ public class Txt extends JFrame{
 			startBlock = Catalog_Function.freeBlock();
 			Finder.disk.block[oldStartBlock / 64][oldStartBlock % 64] = (byte)startBlock;
 		}
-//		
-//		for (int i = 0; i < 64; i++) {
-//			Finder.disk.block[startBlock][i] = (byte)-1;
-//		}
-		
-		
+
+			
 		if (stringToByte.length == 64) {
 			for (int i = 0; i < stringToByte.length; i++) {
 				Finder.disk.block[startBlock][i] = stringToByte[i];

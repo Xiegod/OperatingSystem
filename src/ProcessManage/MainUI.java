@@ -53,8 +53,7 @@ public class MainUI extends JFrame implements ActionListener{
     public MainUI(){   
         super("进程调度模拟");   
         JFrame.setDefaultLookAndFeelDecorated(true);   
-        JDialog.setDefaultLookAndFeelDecorated(true);  
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);   
+        JDialog.setDefaultLookAndFeelDecorated(true);    
            
         //具体布局 GridBagLayout布局方式   
         GridBagConstraints cst = null;   
