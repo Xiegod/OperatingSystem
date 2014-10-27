@@ -115,20 +115,23 @@ public class Catalog_Function {
 					catalog = new Catalog(Finder.disk.block[Explorer.getCDB()], i * 8);
 					if (rename(name, catalog.getName())) {
 						int CDB = catalog.getStartBlock();
+						
 						Finder.disk.block[Explorer.getCDB()][i * 8 + 5] = -1;
 						next = Finder.disk.block[CDB / 64][CDB % 64];
 						Finder.disk.block[CDB / 64][CDB % 64] = 0;
+						
+						System.out.print("下一连接块 为  "+ next);
 						for (int j = 0; j < 64; j++) {
 							Finder.disk.block[CDB][j] = (byte)-1;
 						}
 						
 						while (next != -1) {
 							CDB = Finder.disk.block[next / 64][next % 64];
-							Finder.disk.block[next / 64][next % 64] = 0;
-							next = CDB;
+							Finder.disk.block[next / 64][next % 64] = 0;						
 							for (int j = 0; j < 64; j++) {
 								Finder.disk.block[next][j] = (byte)-1;
 							}
+							next = CDB;
 						}
 						break;
 					}

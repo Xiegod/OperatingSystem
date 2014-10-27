@@ -177,12 +177,12 @@ public class Finder extends JFrame{
 
 		houButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (tempString != "") {
-						Catalog_Function.toDistinationPath(tempString);
-						textField.setText(tempString);					
-						readFile(Explorer.getCDB()); 
-						tempString = "";
-					}				
+//				if (tempString != "") {
+//						Catalog_Function.toDistinationPath(tempString);
+//						textField.setText(tempString);					
+//						readFile(Explorer.getCDB()); 
+//						tempString = "";
+//					}				
 				} 
 		}); 
 
