@@ -117,9 +117,7 @@ public class Finder extends JFrame{
 	}
 
 	//----FAT初始化布局---
-	public void InitFAT(){
-
-		
+	public void InitFAT(){	
 		fatPanel.setVisible(false);
 		fatPanel.removeAll();
 		fatPanel.setVisible(true);
@@ -128,7 +126,6 @@ public class Finder extends JFrame{
 		fatPanel.setBackground(Color.WHITE);	
 		fatPanel.setBorder(new TitledBorder("磁盘分配表（FAT）"));
 		
-
 		draw();
 	}
 	
@@ -164,9 +161,9 @@ public class Finder extends JFrame{
 		qianButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				//----判断是否到了尽头，没有则返回上一层----
-				if (textString.length() > 3) {        
-					tempString = textString;
-					textString = textString.substring(0,textString.lastIndexOf("/"));
+				if (textField.getText().length() > 3) {        
+					tempString = textField.getText();
+					textString = textField.getText().substring(0,textField.getText().lastIndexOf("/"));
 					textField.setText(textString);				
 				}
 				
@@ -177,12 +174,12 @@ public class Finder extends JFrame{
 
 		houButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-//				if (tempString != "") {
-//						Catalog_Function.toDistinationPath(tempString);
-//						textField.setText(tempString);					
-//						readFile(Explorer.getCDB()); 
-//						tempString = "";
-//					}				
+				if (tempString != "" && tempString.contains(textString)) {
+					    textField.setText(tempString);
+						Catalog_Function.toDistinationPath(tempString);					
+						readFile(Explorer.getCDB()); 
+						tempString = "";
+					}				
 				} 
 		}); 
 
@@ -322,7 +319,7 @@ public class Finder extends JFrame{
 				dirLabel.addMouseListener(new MouseAdapter() {
 				public void mouseClicked(MouseEvent e) {
 					if(e.getClickCount() == 2){
-						textString = textString + "/" + catalog.getName().trim();
+						textString = textField.getText() + "/" + catalog.getName().trim();
 						textField.setText(textString);
 						
 						Explorer.addCDB();

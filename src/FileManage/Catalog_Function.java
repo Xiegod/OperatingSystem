@@ -45,7 +45,7 @@ public class Catalog_Function {
 		return catalogList1;
 	}
 
-	//----寻找空闲磁盘块和当前磁盘块中未使用的（8字节为单位）-------
+	//----寻找空闲磁盘块和当前磁盘块中未使用的目录（8字节为单位）-------
 	public static int freeEntry() {
 		int result = 0;
 		for (int i = 0; i <8; i++) {
@@ -74,7 +74,7 @@ public class Catalog_Function {
 	//----判断同名-------
 	public static boolean rename(String name,String name2){
 		boolean flag = true;
-		byte[] temp =( name+"      ").getBytes();
+		byte[] temp =( name+"      ").getBytes(); //---加空格串是避免name值不够3位时达不到匹配功能。
 		byte[] temp1 = new byte[3];
 		temp1[0] = temp[0];
 		temp1[1] = temp[1];
@@ -104,7 +104,7 @@ public class Catalog_Function {
 						if (getAllCatalogs(CDB).size() > 0) {
 							JOptionPane.showMessageDialog(null, "文件目录不为空。不能删除");
 							return -1;
-						}else {
+						}else {  //----清除工作，FAT表该块设置回未使用。
 							Finder.disk.block[Explorer.getCDB()][i * 8 + 5] = -1;
 							Finder.disk.block[CDB / 64][CDB % 64] = 0;							
 							break;
@@ -115,16 +115,16 @@ public class Catalog_Function {
 					catalog = new Catalog(Finder.disk.block[Explorer.getCDB()], i * 8);
 					if (rename(name, catalog.getName())) {
 						int CDB = catalog.getStartBlock();
-						
+						//----先清除第一块-----
 						Finder.disk.block[Explorer.getCDB()][i * 8 + 5] = -1;
 						next = Finder.disk.block[CDB / 64][CDB % 64];
-						Finder.disk.block[CDB / 64][CDB % 64] = 0;
-						
-						System.out.print("下一连接块 为  "+ next);
+						Finder.disk.block[CDB / 64][CDB % 64] = 0;						
+//						System.out.print("下一连接块 为  "+ next);
 						for (int j = 0; j < 64; j++) {
 							Finder.disk.block[CDB][j] = (byte)-1;
 						}
 						
+						//-----若文件占用不只一块，则根据数据链将所有占用的块删除----
 						while (next != -1) {
 							CDB = Finder.disk.block[next / 64][next % 64];
 							Finder.disk.block[next / 64][next % 64] = 0;						
@@ -143,6 +143,7 @@ public class Catalog_Function {
 		return 1;
 	}
 	
+
 	public static int createCatalog(String name,int type,int CDB) throws IOException{
 		Catalog newCatalog;
 		List<Catalog> dirCatalogs = getDirCatalogs(CDB);
@@ -185,6 +186,7 @@ public class Catalog_Function {
 		return 1;
 	}
 		
+
 	public static int writeCatalog(Catalog catalog,int CDB,int point) throws IOException{
 		byte[] data = catalog.catalogToByte();
 		for (int i = 0; i < 8; i++) {
@@ -196,7 +198,7 @@ public class Catalog_Function {
 	}
 	
 	
-	//----根据目录路径到达目录，返回目录所在块-------
+	//----根据目录路径到达目录---返回目录所在块-------
 	public static int toDistinationPath(String string){
 		List<Integer> tempPDB = Explorer.getPDB();
 		int tempCDB = Explorer.getCDB();
