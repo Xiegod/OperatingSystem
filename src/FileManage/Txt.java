@@ -35,6 +35,20 @@ public class Txt extends JFrame{
 		panel = new JPanel();
 		textArea = new TextArea();
 		saveButton = new JButton("save");
+	
+		loadData();
+		
+		panel.add(saveButton,BorderLayout.EAST);
+		setLayout(new BorderLayout());
+		add(panel,BorderLayout.SOUTH);
+		add(textArea,BorderLayout.CENTER);
+		setTitle(catalog.getName());
+		
+		InitListener();
+	}
+	
+	public void InitListener() {
+		// TODO Auto-generated method stub
 		saveButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				try {
@@ -46,15 +60,6 @@ public class Txt extends JFrame{
 				}
 			}
 		});
-		
-		
-		loadData();
-		
-		panel.add(saveButton,BorderLayout.EAST);
-		setLayout(new BorderLayout());
-		add(panel,BorderLayout.SOUTH);
-		add(textArea,BorderLayout.CENTER);
-		setTitle(catalog.getName());
 		
 		this.addWindowListener(new WindowAdapter() {
 			@Override

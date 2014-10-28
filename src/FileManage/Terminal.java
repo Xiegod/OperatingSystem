@@ -21,19 +21,21 @@ public class Terminal extends JFrame {
 	String[] orderStrings = new String[8];
 	
 	public Terminal() throws IOException {
-		finder = new Finder();
+		finder = new Finder();    //----取得对文件系统的操作权限----
 		finder.setVisible(false);
 		
-		t = new TextArea();
+		t = new TextArea();      //-----添加textArea供文本输入---
 		t.setBackground(Color.black);
 		t.setForeground(Color.green);
 		add(t,BorderLayout.CENTER);
 		
+		//----添加在Terminal最上面，装B用的----
 		t.append("SCAU Software Engineering R1 Copyright.\n\n" + finder.textField.getText() + "~ $ ");
 		t.setCaretPosition(t.getText().length());
 		
 		initKeyListener();
 	}
+	
 	
 	public void initKeyListener() {
 		
@@ -42,21 +44,23 @@ public class Terminal extends JFrame {
 				String[] tempsStrings = new String[100];
 				int key = e.getKeyCode();
 				
+				//----设置输入光标不能越过命令开始符$ ---
 				if (key == KeyEvent.VK_LEFT || key == KeyEvent.VK_BACK_SPACE) {
 					if (t.getText().endsWith("$ ")) {
 						e.consume();
 					}
 				}
-				
+				//----在命令行模式下，up键无效----
 				if (key == KeyEvent.VK_UP) {
 					e.consume();
 				}
-				
+				//----接到回车键，即开始执行命令-----
 				if (key == KeyEvent.VK_ENTER) {
 					e.consume();
 					
+					//----取到整个textArea面板内容的最后一行，即是最后一个命令----
 					String s = t.getText();
-					System.out.println(s);
+//					System.out.println(s);
 					tempsStrings = s.split("\n");
 					String order = tempsStrings[tempsStrings.length - 1];
 					
@@ -236,26 +240,15 @@ public class Terminal extends JFrame {
 			t.append("\n  " + tempString + ":No such file or directory");
 		}else {
 			String string = orderStrings[1];		
-			if (string.endsWith(".txt")) {		//文件删除
-				String string2 = string.substring(0,string.indexOf("."));	
-				catalogs = Catalog_Function.getFileCatalogs(Explorer.getCDB());
-				for (int i = 0; i < catalogs.size(); i++) {
-					if (Catalog_Function.rename(string2, catalogs.get(i).getName())) {
-						Catalog_Function.delCatalog(string2, 1);
-						return ;
-					}
-				}
-				t.append("\n  " + tempString + ":No such file or directory");
-				
-			}else {				//目录删除
+				//目录删除
 				catalogs =Catalog_Function.getDirCatalogs(Explorer.getCDB());
 				for (int i = 0; i < catalogs.size(); i++) {
 					if (Catalog_Function.rename(string, catalogs.get(i).getName())) {
 						Catalog_Function.delCatalog(string, 0);
 					}
 				}
-			}
 		}
+		
 	}
 	
 	public void delete() throws IOException {
@@ -291,7 +284,7 @@ public class Terminal extends JFrame {
 	
 	public void create() throws IOException {
 		stringToForm();
-
+		
 		if(Catalog_Function.toDistinationPath(tempString) != 1){			
 			t.append("\n  " + tempString + ":No such file or directory");
 		}else {
@@ -305,6 +298,7 @@ public class Terminal extends JFrame {
 		}
 	}
 	
+	//----将命令行里面的路径格式化为 文件系统能识别的路径格式----
 	public void stringToForm(){
 		if (orderStrings[1].indexOf("/") == -1) {
 			tempString = "C:";
