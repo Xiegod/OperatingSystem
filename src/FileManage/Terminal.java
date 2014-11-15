@@ -139,14 +139,14 @@ public class Terminal extends JFrame {
 	}
 	
 	public void showHelp() {
-		t.append("\n    help                  -> 获取指令提示");
+		t.append("\n    help                   	  -> 获取指令提示");
 		t.append("\n    ..             	  	  -> 退回上一层目录");
 		t.append("\n    cd a           		  -> 改变当前目录为a");
-		t.append("\n    create aa/bb(.txt)    -> 在aa(aa为已存在)目录下创建bb (bb可以是目录，也可以是.txt) ");
+		t.append("\n    create aa/bb(.txt) 	 	  -> 在aa(aa为已存在)目录下创建bb (bb可以是目录，也可以是.txt) ");
 		t.append("\n    mkdir a        		  -> 在当前目录创建a目录");
-		t.append("\n    delete aa/bb(.txt)    -> 删除aa目录下的bb (bb可以是目录，也可以是.txt)");
-		t.append("\n    redir a        		  -> 删除当前目录下的a目录");
-		t.append("\n    type a.txt      	  -> 打开a.txt文档");
+		t.append("\n    delete aa/bb(.txt)   	  -> 删除aa目录下的bb (bb可以是目录，也可以是.txt)");
+		t.append("\n    rmdir a        		  -> 删除当前目录下的a目录");
+		t.append("\n    type a.txt      		  -> 打开a.txt文档");
 		t.append("\n    copy a/b.txt c/		  -> 复制b.txt到c目录下");
 	}
 	

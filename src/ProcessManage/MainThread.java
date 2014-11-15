@@ -99,8 +99,7 @@ public class MainThread extends Thread{
                             runTime = subThread[i].getStart() - mainTime;   
                             break;   
                         }   
-                    }   
-                    status.setText("CPU处于空闲状态");   
+                    }    
                 }   
                 show();   
                 //进程的具体操作   

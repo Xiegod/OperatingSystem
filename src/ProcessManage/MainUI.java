@@ -312,18 +312,21 @@ public class MainUI extends JFrame implements ActionListener{
             runSubmit.setEnabled(false);   
         }
         else if(oj==randomSubmit){
-        	String pname="Process"+count;
-        	int start=(int)(Math.random()*10)+(int)(Math.random());
-        	int len=(int)(Math.random()*10);
-        	subThread[threadNum] = new SubThread(pname, start, len);   
-            threadNum++;   
-            if(threadNum == number)   
-                submitDone();   
-            display();   
-            processNameField.setText("");   
-            processStartField.setText("");   
-            processLenField.setText("");
-            count++;
+        	if(count < number + 1)
+        	{
+	        	String pname="Process"+count;
+	        	int start=(int)(Math.random()*10)+(int)(Math.random());
+	        	int len=(int)(Math.random()*10) + 1;
+	        	subThread[threadNum] = new SubThread(pname, start, len);   
+	            threadNum++;   
+	            if(threadNum == number)   
+	                submitDone();   
+	            display();   
+	            processNameField.setText("");   
+	            processStartField.setText("");   
+	            processLenField.setText("");
+	            count++;
+        	}
         }
     }   
        

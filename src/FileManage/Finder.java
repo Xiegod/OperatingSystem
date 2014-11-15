@@ -188,8 +188,10 @@ public class Finder extends JFrame{
 				int num = Catalog_Function.toDistinationPath(textField.getText());
 				if (num == 2) {
 					JOptionPane.showMessageDialog(null, "文件不存在！");
+					textField.setText(textString);
 				}else if (num == 3) {
-					JOptionPane.showMessageDialog(null, "请输入正确的文件路径！ \n  以 C:\\ 开头");
+					JOptionPane.showMessageDialog(null, "请输入正确的文件路径！ \n  以 C:/ 开头");
+					textField.setText(textString);
 				}
 				readFile(Explorer.getCDB());
 			}
